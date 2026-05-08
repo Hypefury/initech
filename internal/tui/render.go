@@ -343,7 +343,12 @@ func (t *TUI) renderHints() {
 	// Left: cycling tip.
 	b.addLeft(statusTips[t.tipIndex%len(statusTips)], b.barStyle)
 
-	// Right items are added in display order (left-to-right within the right block).
+	// Right side groups items by category, in display order (left-to-right):
+	//   1. App state:    mode, pending timers, update, quota
+	//   2. System state: battery, branch, clock
+	//   3. Hints:        keyboard shortcuts
+
+	// --- App state ---
 
 	// Layout mode label.
 	{
@@ -402,6 +407,8 @@ func (t *TUI) renderHints() {
 		b.addRight(fmt.Sprintf("Q:%d%%", t.quotaPercent), quotaStyle)
 	}
 
+	// --- System state ---
+
 	// Battery.
 	if t.batteryPercent >= 0 {
 		battStr := fmt.Sprintf("%d%%", t.batteryPercent)
@@ -423,11 +430,13 @@ func (t *TUI) renderHints() {
 		b.addRight("git:"+truncateRunes(t.branch, 25), b.barStyle)
 	}
 
+	// Clock.
+	b.addRight(time.Now().Format("15:04"), b.barStyle)
+
+	// --- Hints ---
+
 	// Keyboard shortcuts.
 	b.addRight("`:cmd  Alt+z:zoom  Alt+s:overlay  ?:help  Alt+q:quit", b.barStyle)
-
-	// Clock (rightmost).
-	b.addRight(time.Now().Format("15:04"), b.barStyle)
 
 	b.render(t.screen, sh-1)
 }
