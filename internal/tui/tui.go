@@ -209,6 +209,11 @@ type TUI struct {
 	batteryPercent  int  // 0-100, or -1 if no battery detected.
 	batteryCharging bool // True when plugged in and charging.
 
+	// Current git branch of projectRoot, refreshed by pollBranch on the
+	// render tick. Empty when projectRoot is not a git repo.
+	branch       string
+	branchPollAt time.Time
+
 	// Claude Code quota percentage scraped from an agent's status bar.
 	// -1 means not available (no pane showed a quota, or all panes dead).
 	quotaPercent int
@@ -975,6 +980,7 @@ func Run(cfg Config) error {
 			}
 			t.rotateTip()
 			t.pollQuota()
+			t.pollBranch()
 			t.fireTimers()
 			if t.layoutState.Mode == LayoutLive && time.Since(t.lastLiveTick) >= time.Second {
 				t.lastLiveTick = time.Now()
