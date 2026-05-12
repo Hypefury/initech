@@ -31,3 +31,6 @@ ARCHITECTURE.md
 1tokf
 coverage.out
 .tokf/
+
+# Claude Code worktrees
+.claude/worktrees/
